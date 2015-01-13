@@ -20,6 +20,7 @@
 		2F44949C1A64715400512F40 /* parkBench.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 2F44949B1A64715400512F40 /* parkBench.jpg */; };
 		2F4494A51A64741000512F40 /* GalleryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4494A41A64741000512F40 /* GalleryCell.swift */; };
 		2F4494A71A6476A600512F40 /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4494A61A6476A600512F40 /* GalleryViewController.swift */; };
+		2F7D52541A65BDAB00A19CE4 /* Thumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7D52531A65BDAB00A19CE4 /* Thumbnail.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,7 @@
 		2F44949B1A64715400512F40 /* parkBench.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = parkBench.jpg; sourceTree = "<group>"; };
 		2F4494A41A64741000512F40 /* GalleryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryCell.swift; sourceTree = "<group>"; };
 		2F4494A61A6476A600512F40 /* GalleryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
+		2F7D52531A65BDAB00A19CE4 /* Thumbnail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Thumbnail.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,9 +94,9 @@
 			isa = PBXGroup;
 			children = (
 				2F4494711A6470FB00512F40 /* AppDelegate.swift */,
-				2F44949F1A64719500512F40 /* Controllers */,
 				2F44949E1A64718A00512F40 /* Views */,
 				2F44949D1A64717E00512F40 /* Models */,
+				2F44949F1A64719500512F40 /* Controllers */,
 				2F4494781A6470FB00512F40 /* Images.xcassets */,
 				2F44947A1A6470FB00512F40 /* LaunchScreen.xib */,
 				2F44946F1A6470FB00512F40 /* Supporting Files */,
@@ -136,7 +138,7 @@
 				2F4494951A64713600512F40 /* dune.jpg */,
 				2F4494931A64712D00512F40 /* desk.jpg */,
 				2F4494911A64712500512F40 /* brooklynBridge.jpg */,
-				2F4494A41A64741000512F40 /* GalleryCell.swift */,
+				2F7D52531A65BDAB00A19CE4 /* Thumbnail.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -144,6 +146,7 @@
 		2F44949E1A64718A00512F40 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2F4494A41A64741000512F40 /* GalleryCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -265,6 +268,7 @@
 				2F4494A51A64741000512F40 /* GalleryCell.swift in Sources */,
 				2F4494A71A6476A600512F40 /* GalleryViewController.swift in Sources */,
 				2F4494741A6470FB00512F40 /* ViewController.swift in Sources */,
+				2F7D52541A65BDAB00A19CE4 /* Thumbnail.swift in Sources */,
 				2F4494721A6470FB00512F40 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -451,6 +455,7 @@
 				2F44948D1A6470FB00512F40 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2F44948E1A6470FB00512F40 /* Build configuration list for PBXNativeTarget "PhotoFiltersTests" */ = {
 			isa = XCConfigurationList;
@@ -459,6 +464,7 @@
 				2F4494901A6470FB00512F40 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
