@@ -19,7 +19,7 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource {
     let rootView = UIView(frame: UIScreen.mainScreen().bounds)
     let collectionViewFlowLayout = UICollectionViewFlowLayout()
     self.collectionView = UICollectionView(frame: rootView.frame, collectionViewLayout: collectionViewFlowLayout)
-    //self.collectionView.setTranslatesAutoresizingMaskIntoConstraints(false)
+    collectionView.setTranslatesAutoresizingMaskIntoConstraints(false)
     
     // add the collectionView as a subview, we're our own data source
     rootView.addSubview(self.collectionView)
@@ -91,6 +91,9 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource {
   func setupConstraintsOnRootView(rootView: UIView, forViews galleryViews: [String : AnyObject]) {
     let collectionViewConstraintVertical = NSLayoutConstraint.constraintsWithVisualFormat("V:[navigationBar]-30-[collectionView]-30-|", options: nil, metrics: nil, views: galleryViews)
     rootView.addConstraints(collectionViewConstraintVertical)
+    
+    let collectionViewConstraintHorizontal = NSLayoutConstraint.constraintsWithVisualFormat("H:|-[collectionView]-|", options: nil, metrics: nil, views: galleryViews)
+    rootView.addConstraints(collectionViewConstraintHorizontal)
   } // setupConstraintsOnRootView()
   
 
