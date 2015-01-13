@@ -19,13 +19,24 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource {
     let rootView = UIView(frame: UIScreen.mainScreen().bounds)
     let collectionViewFlowLayout = UICollectionViewFlowLayout()
     self.collectionView = UICollectionView(frame: rootView.frame, collectionViewLayout: collectionViewFlowLayout)
+    collectionView.setTranslatesAutoresizingMaskIntoConstraints(false)
     
     // add the collectionView as a subview, we're our own data source
     rootView.addSubview(self.collectionView)
     self.collectionView.dataSource = self
     
-    // set the collection view cell size
+    // set the collection view minimum cell size
     collectionViewFlowLayout.itemSize = CGSize(width: 200, height: 200)
+    
+    // add Jon Vogel's code to let us set up constraints based on the GalleryViewController's  Navigation Bar
+    let navigationBar = self.navigationController!.navigationBar
+    rootView.addSubview(navigationBar)
+    
+    // set up a dictionary of views so we can set constraints with VFL
+    let galleryViews = ["collectionView" : collectionView, "navigationBar" : navigationBar]
+    
+    // define the constraints
+    self.setupConstraintsOnRootView(rootView, forViews: galleryViews )
         
     self.view = rootView
     
@@ -58,10 +69,12 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource {
   
   // MARK: UICollectionViewDataSource
   
+  // find out how many images there are in the collection
   func collectionView(collectionView: UICollectionView, numberOfItemsInSection: Int) -> Int {
     return self.images.count
   } // collectionView(numberOfItemsInSection)
   
+  // put an image in the collection view cell
   func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier("GALLERY_CELL", forIndexPath: indexPath) as GalleryCell
     let image = self.images[indexPath.row]
@@ -73,6 +86,17 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+  
+  // MARK: Gallery Autolayout Constraints
+  func setupConstraintsOnRootView(rootView: UIView, forViews galleryViews: [String : AnyObject]) {
+    let collectionViewConstraintVertical = NSLayoutConstraint.constraintsWithVisualFormat("V:[navigationBar]-30-[collectionView]-30-|", options: nil, metrics: nil, views: galleryViews)
+    rootView.addConstraints(collectionViewConstraintVertical)
+    
+    let collectionViewConstraintHorizontal = NSLayoutConstraint.constraintsWithVisualFormat("H:|-[collectionView]-|", options: nil, metrics: nil, views: galleryViews)
+    rootView.addConstraints(collectionViewConstraintHorizontal)
+  } // setupConstraintsOnRootView()
+  
+
     
 
     /*
