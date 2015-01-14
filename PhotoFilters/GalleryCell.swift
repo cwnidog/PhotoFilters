@@ -15,10 +15,14 @@ class GalleryCell: UICollectionViewCell {
     super.init(frame: frame)
     
     self.addSubview(self.imageView)
-    self.backgroundColor = UIColor.whiteColor()
+    
+    // set image attributes
     imageView.frame = self.bounds
+    imageView.contentMode = UIViewContentMode.ScaleAspectFill
+    imageView.layer.masksToBounds = true
   } // override init()
   
+  // we gotta do this to keep Xcode happy
   required init(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   } // required init()

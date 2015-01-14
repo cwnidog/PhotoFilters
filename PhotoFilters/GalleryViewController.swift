@@ -8,27 +8,37 @@
 
 import UIKit
 
-class GalleryViewController: UIViewController, UICollectionViewDataSource {
+protocol ImageSelectedProtocol {
+  func controllerDidSelectImage(UIImage) -> Void
+} // ImageSelectedProtocol
+
+class GalleryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
   
   var collectionView : UICollectionView!
   var images = [UIImage]()
+  var delegate: ImageSelectedProtocol?
   
   override func loadView() {
     
     //set up the view to use the full screen and FlowLayout
     let rootView = UIView(frame: UIScreen.mainScreen().bounds)
     let collectionViewFlowLayout = UICollectionViewFlowLayout()
-    self.collectionView = UICollectionView(frame: rootView.frame, collectionViewLayout: collectionViewFlowLayout)
-    collectionView.setTranslatesAutoresizingMaskIntoConstraints(false)
     
-    // add the collectionView as a subview, we're our own data source
+    // create the collection view to display the photos
+    self.collectionView = UICollectionView(frame: rootView.frame, collectionViewLayout: collectionViewFlowLayout)
+    
+    // turn off the collection views setTranslatesAutoresizingMaskIntoConstraints
+    self.collectionView.setTranslatesAutoresizingMaskIntoConstraints(false)
+    
+    // add the collectionView as a subview, we're our own data source and delegate
     rootView.addSubview(self.collectionView)
     self.collectionView.dataSource = self
+    self.collectionView.delegate = self
     
     // set the collection view minimum cell size
     collectionViewFlowLayout.itemSize = CGSize(width: 200, height: 200)
     
-    // add Jon Vogel's code to let us set up constraints based on the GalleryViewController's  Navigation Bar
+    // display a navigation bar
     let navigationBar = self.navigationController!.navigationBar
     rootView.addSubview(navigationBar)
     
@@ -47,7 +57,7 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource {
       
       self.view.backgroundColor = UIColor.whiteColor()
       
-      // register the gallery cell
+       // register the gallery cell
       self.collectionView.registerClass(GalleryCell.self, forCellWithReuseIdentifier: "GALLERY_CELL")
       
       // load images - for now directly 
@@ -81,22 +91,28 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource {
     cell.imageView.image = image
     return cell
   }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
   
   // MARK: Gallery Autolayout Constraints
   func setupConstraintsOnRootView(rootView: UIView, forViews galleryViews: [String : AnyObject]) {
+    
+    // add Jon Vogel's code to let us set up constraints based on the GalleryViewController's  Navigation Bar
     let collectionViewConstraintVertical = NSLayoutConstraint.constraintsWithVisualFormat("V:[navigationBar]-30-[collectionView]-30-|", options: nil, metrics: nil, views: galleryViews)
     rootView.addConstraints(collectionViewConstraintVertical)
     
+    //want the collection view to use the full-width of the screen between the margins
     let collectionViewConstraintHorizontal = NSLayoutConstraint.constraintsWithVisualFormat("H:|-[collectionView]-|", options: nil, metrics: nil, views: galleryViews)
     rootView.addConstraints(collectionViewConstraintHorizontal)
   } // setupConstraintsOnRootView()
   
-
+  //MARK: UICollectionViewDelegate
+  func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    
+    // pass the selected image array to the delegat to be processed
+    self.delegate?.controllerDidSelectImage(self.images[indexPath.row])
+    
+    // pop ourselves off the nav queue
+    self.navigationController?.popViewControllerAnimated(true)
+  } // collectionView delegate
     
 
     /*
