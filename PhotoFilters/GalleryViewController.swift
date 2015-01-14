@@ -30,15 +30,15 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     // turn off the collection views setTranslatesAutoresizingMaskIntoConstraints
     self.collectionView.setTranslatesAutoresizingMaskIntoConstraints(false)
     
-    // add the collectionView as a subview, we're our own data source
+    // add the collectionView as a subview, we're our own data source and delegate
     rootView.addSubview(self.collectionView)
     self.collectionView.dataSource = self
     self.collectionView.delegate = self
-    collectionViewFlowLayout.itemSize = CGSize(width: 200, height: 200)
     
     // set the collection view minimum cell size
     collectionViewFlowLayout.itemSize = CGSize(width: 200, height: 200)
     
+    // display a navigation bar
     let navigationBar = self.navigationController!.navigationBar
     rootView.addSubview(navigationBar)
     

@@ -18,7 +18,8 @@ class GalleryCell: UICollectionViewCell {
     
     // set image attributes
     imageView.frame = self.bounds
-    imageView.contentMode = UIViewContentMode.ScaleAspectFit
+    imageView.contentMode = UIViewContentMode.ScaleAspectFill
+    imageView.layer.masksToBounds = true
   } // override init()
   
   // we gotta do this to keep Xcode happy

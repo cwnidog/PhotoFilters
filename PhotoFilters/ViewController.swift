@@ -39,7 +39,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     rootView.addSubview(photoButton)
     photoButton.addTarget(self, action: "photoButtonPressed:", forControlEvents: UIControlEvents.TouchUpInside)
     
-    // set up the collection view
+    // set up the collection view to hold the filtered images
     let collectionViewFlowLayout = UICollectionViewFlowLayout()
     self.collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionViewFlowLayout)
     collectionViewFlowLayout.itemSize = CGSize(width: 100, height: 100)
@@ -61,25 +61,29 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    // want to use 
+    // want to use an action sheet to allow the user to select images from the gallery or to apply filters to the
+    // selected image
+    
+    // view the image gallery
     let galleryOption = UIAlertAction(title: "Gallery", style: UIAlertActionStyle.Default) { (action) -> Void in
       println("Gallery pressed")
-      
       let galleryVC = GalleryViewController()
       galleryVC.delegate = self
       self.navigationController?.pushViewController(galleryVC, animated: true)
     } // galleryOption closure
     self.alertController.addAction(galleryOption)
     
+    // apply the filters to the selected image
     let filterOption = UIAlertAction(title: "Filter", style: UIAlertActionStyle.Default) { (action) -> Void in
       self.collectionViewYConstaraint.constant = 20
       UIView.animateWithDuration(0.4, animations: { () -> Void in
-        self.view.setNeedsLayout()
+        self.view.layoutIfNeeded()
       })
     } // filterOption closure
     self.alertController.addAction(filterOption)
     
-    let options = [kCIContextWorkingColorSpace: NSNull()] // keeps things quick
+    // set up needed items to use the device's GPU
+    let options = [kCIContextWorkingColorSpace: NSNull()] // keep things quick by limiting image resolution and size
     let eaglContext = EAGLContext(API: EAGLRenderingAPI.OpenGLES2)
     self.gpuContext = CIContext(EAGLContext: eaglContext, options: options)
     self.setupThumbnails()
@@ -94,10 +98,12 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   } // setupThumbnails()
   
   //MARK: ImageSelectedDelegate
+  
+  //Handles things when the user selects an image from the gallery
   func controllerDidSelectImage(image: UIImage) {
     println("Image selected")
-    self.mainImageView.image = image
-    self.generateThumbnail(image)
+    self.mainImageView.image = image // display the image on the main screen
+    self.generateThumbnail(image) // generate the filtered thumbnails
     
     for thumbnail in self.thumbnails {
       thumbnail.originalImage = self.originalThumbnail
@@ -111,6 +117,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     self.presentViewController(self.alertController, animated: true, completion: nil)
   } // photoButtonPressed()
   
+  // generate the filtered thumbnails from the original image and display them in the collection view
   func generateThumbnail(originalImage: UIImage) {
     let size = CGSize(width: 100, height: 100)
     UIGraphicsBeginImageContext(size) // begin our image context
