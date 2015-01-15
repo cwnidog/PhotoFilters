@@ -29,6 +29,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   var shareButton : UIBarButtonItem!
   
   var delegate: ImageSelectedProtocol? // will accept anything that conforms to this protocol
+  var filteredMainImage : UIImage!
   
   override func loadView() {
     
@@ -132,7 +133,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   
   func setupThumbnails() {
     // the list of filters to apply
-    self.filterNames = ["CISepiaTone", "CIPhotoEffectChrome", "CIPhotoEffectNoir", "CIColorInvert", "CIPhotoEffectFade", "CIPhotoEffectMono"]
+    self.filterNames = ["CISepiaTone", "CIPhotoEffectChrome", "CIPhotoEffectNoir", "CIColorInvert", "CIPhotoEffectFade", "CIPhotoEffectMono", "CIDotScreen", "CIHatchedScreen"]
     
     // apply each of the filters
     for name in self.filterNames {
@@ -227,11 +228,32 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     return cell
   } // collectionView(cellForItemAtIndexPath)
   
+  // does just what its name suggests
+  func generateFilteredImage(filterIndex: Int) {
+    
+    let startImage = CIImage(image: self.mainImageView.image)
+    let filter = CIFilter(name: self.filterNames[filterIndex])
+    
+    // use default values for any keys that the filter may need
+    filter.setDefaults()
+    filter.setValue(startImage, forKey: kCIInputImageKey)
+    
+    // apply the filters and get the filtered image
+    let result = filter.valueForKey(kCIOutputImageKey) as CIImage
+    let extent = result.extent()
+    let imageRef = self.gpuContext.createCGImage(result, fromRect: extent)
+    self.filteredMainImage = UIImage(CGImage: imageRef)
+  } // generateFilteredImage()
+  
   //MARK: UICollectionViewDelegate
   func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
     // pass the selected image to the delegate to be filtered
-    self.delegate?.controllerDidSelectImage(self.thumbnails[indexPath.row].filteredImage as UIImage!)
-    self.mainImageView.image = self.thumbnails[indexPath.row].filteredImage
+    generateFilteredImage(indexPath.row)
+    self.mainImageView.image = self.filteredMainImage
+    println("Thumbnail size = \(self.thumbnails[indexPath.row].filteredImage!.size)")
+    println("Original size = \(self.thumbnails[indexPath.row].originalImage!.size)")
+    println("Main image size = \(self.mainImageView.image!.size)")
+    println("Filter is \(self.filterNames[indexPath.row])")
   } // collectionView delegate
   
   // MARK: Autolayout Constraints

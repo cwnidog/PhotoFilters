@@ -53,6 +53,7 @@
 		2F44949B1A64715400512F40 /* parkBench.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = parkBench.jpg; sourceTree = "<group>"; };
 		2F4494A41A64741000512F40 /* GalleryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryCell.swift; sourceTree = "<group>"; };
 		2F4494A61A6476A600512F40 /* GalleryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
+		2F6ACFEB1A684D3300CEE1E4 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		2F7D52531A65BDAB00A19CE4 /* Thumbnail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Thumbnail.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -301,6 +302,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				2F44947B1A6470FB00512F40 /* Base */,
+				2F6ACFEB1A684D3300CEE1E4 /* fr */,
 			);
 			name = LaunchScreen.xib;
 			sourceTree = "<group>";

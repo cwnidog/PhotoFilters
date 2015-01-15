@@ -35,3 +35,10 @@ NavBar:
 * Use the SLCompViewController to post a photo up to twitter #ellensburg
 * When entering filter mode, shrink the main image view down by adding to its constraints constant values. Make this animated (of course)
 * Figure out some way to apply the selected filter from the filter thumbnail collection view to the image in the main image view
+
+#Gestures
+----------
+
+* Add the pinch gesture recognizer to your gallery view controller, and change the item size when the pinching takes place
+* Add a 2nd language to your app and correctly translate your user facing strings
+* Using the assets catalogue, add 2x and 3x version of your gallery images to your app
