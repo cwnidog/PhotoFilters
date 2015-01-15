@@ -11,25 +11,28 @@ import Social
 
 class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDelegate {
   
-  let alertController = UIAlertController(title: "Photo Filtering", message: "Funkify Your Photos", preferredStyle: UIAlertControllerStyle.ActionSheet)
+  let alertController = UIAlertController(title: NSLocalizedString("Photo Filtering", comment: "This is the title for our Alert Controller"), message: NSLocalizedString("Funkify Your Photos", comment: "This is the message for our alert controller"), preferredStyle: UIAlertControllerStyle.ActionSheet)
   
   // image and collection view properties
   let mainImageView = UIImageView()
+
   var mainImageViewButtonConstraint : NSLayoutConstraint!
   
   var collectionView: UICollectionView!
   var collectionViewYConstraint: NSLayoutConstraint!
+  
   var originalThumbnail: UIImage!
   var filterNames = [String]()
+  
   let imageQueue = NSOperationQueue()
   var gpuContext: CIContext!
   var thumbnails = [Thumbnail]()
+  var filteredMainImage : UIImage! // holds a filtered version of the main image
   
   var doneButton : UIBarButtonItem!
   var shareButton : UIBarButtonItem!
   
   var delegate: ImageSelectedProtocol? // will accept anything that conforms to this protocol
-  var filteredMainImage : UIImage!
   
   override func loadView() {
     
@@ -43,7 +46,8 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     // set up the Photo button
     let photoButton = UIButton()
     photoButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-    photoButton.setTitle("Photos", forState: .Normal)
+    photoButton.setTitle(
+      NSLocalizedString("Photos", comment: "This is the title for our photos button"), forState: .Normal)
     photoButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
     rootView.addSubview(photoButton)
     photoButton.addTarget(self, action: "photoButtonPressed:", forControlEvents: UIControlEvents.TouchUpInside)
@@ -80,7 +84,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     self.navigationItem.rightBarButtonItem = self.shareButton
     
     // view the image gallery
-    let galleryOption = UIAlertAction(title: "Gallery", style: UIAlertActionStyle.Default) { (action) -> Void in
+    let galleryOption = UIAlertAction( title: NSLocalizedString("Gallery", comment: "This is the name of our Gallery action"), style: UIAlertActionStyle.Default) { (action) -> Void in
       println("Gallery pressed")
       let galleryVC = GalleryViewController()
       galleryVC.delegate = self // this sets us up as the galleryVC delegate
@@ -104,7 +108,8 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     
     // add an option to use the camera - assuming there is one
     if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera){
-      let cameraOption = UIAlertAction(title: "Camera", style: .Default, handler: { (action) -> Void in
+      let cameraOption = UIAlertAction(title:
+       NSLocalizedString("Camera", comment: "The name of our option to get the photo from the camera"), style: .Default, handler: { (action) -> Void in
         
         let imagePickerController = UIImagePickerController()
         imagePickerController.sourceType = UIImagePickerControllerSourceType.Camera
@@ -116,7 +121,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     } // camera available
     
       // add option to go to stored photos
-      let photoOption = UIAlertAction(title: "Photos", style: .Default, handler: { (action) -> Void in
+      let photoOption = UIAlertAction(title: NSLocalizedString("Photos", comment: "The name of our option to use stored photos"), style: .Default, handler: { (action) -> Void in
         let photosVC = PhotosViewController()
         photosVC.destinationImageSize = self.mainImageView.frame.size
         photosVC.delegate = self
@@ -247,13 +252,9 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   
   //MARK: UICollectionViewDelegate
   func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-    // pass the selected image to the delegate to be filtered
+    // generate a filtered version of the mainImage, using the selected filter
     generateFilteredImage(indexPath.row)
     self.mainImageView.image = self.filteredMainImage
-    println("Thumbnail size = \(self.thumbnails[indexPath.row].filteredImage!.size)")
-    println("Original size = \(self.thumbnails[indexPath.row].originalImage!.size)")
-    println("Main image size = \(self.mainImageView.image!.size)")
-    println("Filter is \(self.filterNames[indexPath.row])")
   } // collectionView delegate
   
   // MARK: Autolayout Constraints

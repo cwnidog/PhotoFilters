@@ -17,12 +17,12 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
   var collectionView : UICollectionView!
   var images = [UIImage]()
   var delegate: ImageSelectedProtocol? // will accept anything that conforms to this protocol
+  var collectionViewFlowLayout : UICollectionViewFlowLayout!
   
   override func loadView() {
-    var delegate: ImageSelectedProtocol? // will accept anything that conforms to this protocol
     //set up the view to use the full screen and FlowLayout
     let rootView = UIView(frame: UIScreen.mainScreen().bounds)
-    let collectionViewFlowLayout = UICollectionViewFlowLayout()
+    self.collectionViewFlowLayout = UICollectionViewFlowLayout()
     
     // create the collection view to display the photos
     self.collectionView = UICollectionView(frame: rootView.frame, collectionViewLayout: collectionViewFlowLayout)
@@ -42,6 +42,9 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     
     // define the constraints
     self.setupConstraintsOnRootView(rootView, forViews: galleryViews )
+    
+    // set the collectionViewFlowLayout itemSize property
+    collectionViewFlowLayout.itemSize = CGSize(width: 200, height: 200)
         
     self.view = rootView
     
@@ -70,12 +73,16 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
       self.images.append(fog!)
       self.images.append(oldCab!)
       self.images.append(parkBench!)
+      
+      // create and add the pinch gesture recognizer
+      let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: "collectionViewPinched:")
+      self.collectionView.addGestureRecognizer(pinchRecognizer)
     } // viewDidLoad()
   
-  override func viewWillAppear(animated: Bool) {
+  /* override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
     self.navigationController?.setNavigationBarHidden(false, animated: false)
-  }
+  } */
   
   // MARK: UICollectionViewDataSource
   
@@ -91,6 +98,35 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     cell.imageView.image = image
     return cell
   }
+  
+  // MARK: Gexture Recognizer Actions
+  func collectionViewPinched(sender : UIPinchGestureRecognizer) {
+    switch sender.state {
+      case .Began :
+        println("began")
+    case .Changed :
+      println("changed")
+     self.collectionView.performBatchUpdates({ () -> Void in
+      if sender.velocity > 0 {
+        // increase item size
+        let newSize = CGSize(width: self.collectionViewFlowLayout.itemSize.width * 1.05, height: self.collectionViewFlowLayout.itemSize.height * 1.05)
+        self.collectionViewFlowLayout.itemSize = newSize
+      } // increase size
+      else if sender.velocity < 0 {
+        // decrease size
+        let newSize = CGSize(width: self.collectionViewFlowLayout.itemSize.width * 0.95, height: self.collectionViewFlowLayout.itemSize.height * 0.95)
+        self.collectionViewFlowLayout.itemSize = newSize
+      } // decrease size
+      
+     }, completion: { (finished) -> Void in
+      
+     })
+    default :
+      println("default case")
+      
+    } // end switch
+    println("collection view pinched")
+  } // collectionViewPinched()
   
   // MARK: Gallery Autolayout Constraints
   func setupConstraintsOnRootView(rootView: UIView, forViews galleryViews: [String : AnyObject]) {
