@@ -181,7 +181,9 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   } // generateThumbnail()
   
   func donePressed() {
+    // put the collectionView back out of sight and let the main image stretch back out to the original size
     self.collectionViewYConstraint.constant = -120
+    self.mainImageViewButtonConstraint.constant  = 30
     UIView.animateWithDuration(0.4, animations: { () -> Void in
       self.view.layoutIfNeeded()
     }) // closure
@@ -213,6 +215,9 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
       if thumbnail.filteredImage == nil { // need to generate the filtered image
         thumbnail.generateFilteredImage()
         cell.imageView.image = thumbnail.filteredImage!
+        
+        // self.mainImageView.image = cell.imageView.image
+        
       } // filteredImage == nil
     } // originalImage != nil
     

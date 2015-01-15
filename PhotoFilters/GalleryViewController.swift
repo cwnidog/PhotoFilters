@@ -16,7 +16,7 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
   
   var collectionView : UICollectionView!
   var images = [UIImage]()
-  var delegate: ImageSelectedProtocol? // will accept sanything that conforms to this protocol
+  var delegate: ImageSelectedProtocol? // will accept anything that conforms to this protocol
   
   override func loadView() {
     
@@ -95,7 +95,6 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
   // MARK: Gallery Autolayout Constraints
   func setupConstraintsOnRootView(rootView: UIView, forViews galleryViews: [String : AnyObject]) {
     
-    // add Jon Vogel's code to let us set up constraints based on the GalleryViewController's  Navigation Bar
     let collectionViewConstraintVertical = NSLayoutConstraint.constraintsWithVisualFormat("V:|-70-[collectionView]-30-|", options: nil, metrics: nil, views: galleryViews)
     rootView.addConstraints(collectionViewConstraintVertical)
     
@@ -107,7 +106,7 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
   //MARK: UICollectionViewDelegate
   func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
     
-    // pass the selected image array to the delegate to be processed
+    // pass the selected image to the delegate to be filtered
     self.delegate?.controllerDidSelectImage(self.images[indexPath.row])
     
     // pop ourselves off the nav queue
