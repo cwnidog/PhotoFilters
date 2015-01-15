@@ -9,7 +9,7 @@
 import UIKit
 import Social
 
-class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDelegate {
   
   let alertController = UIAlertController(title: "Photo Filtering", message: "Funkify Your Photos", preferredStyle: UIAlertControllerStyle.ActionSheet)
   
@@ -27,6 +27,8 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   
   var doneButton : UIBarButtonItem!
   var shareButton : UIBarButtonItem!
+  
+  var delegate: ImageSelectedProtocol? // will accept anything that conforms to this protocol
   
   override func loadView() {
     
@@ -52,6 +54,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     collectionViewFlowLayout.scrollDirection = .Horizontal
     collectionView.setTranslatesAutoresizingMaskIntoConstraints(false)
     collectionView.dataSource = self
+    collectionView.delegate = self
     collectionView.registerClass(GalleryCell.self, forCellWithReuseIdentifier: "FILTER_CELL")
     rootView.addSubview(collectionView)
     
@@ -223,6 +226,13 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     
     return cell
   } // collectionView(cellForItemAtIndexPath)
+  
+  //MARK: UICollectionViewDelegate
+  func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    // pass the selected image to the delegate to be filtered
+    self.delegate?.controllerDidSelectImage(self.thumbnails[indexPath.row].filteredImage as UIImage!)
+    self.mainImageView.image = self.thumbnails[indexPath.row].filteredImage
+  } // collectionView delegate
   
   // MARK: Autolayout Constraints
   func setupConstraintsOnRootView(rootView: UIView, forViews views: [String : AnyObject])

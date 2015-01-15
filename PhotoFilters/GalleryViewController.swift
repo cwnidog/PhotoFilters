@@ -19,7 +19,7 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
   var delegate: ImageSelectedProtocol? // will accept anything that conforms to this protocol
   
   override func loadView() {
-    
+    var delegate: ImageSelectedProtocol? // will accept anything that conforms to this protocol
     //set up the view to use the full screen and FlowLayout
     let rootView = UIView(frame: UIScreen.mainScreen().bounds)
     let collectionViewFlowLayout = UICollectionViewFlowLayout()
