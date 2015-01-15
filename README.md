@@ -18,10 +18,20 @@ NavBar:
 
 * Adding Jon Vogel's code to have the collection view's vertical constraint set to the navigation bar, rather than the top of the root view, so that sectopns of photos don't get lost under the nav bar.
 
-initialFilters
+#initialFilters
 ----------------
 
 * Setup your custom protocol & delegate, which will allow your gallery view controller to communicate back to the home view controller which image was selected from the gallery
 * Setup a collection view to show filtered thumbnails of the image
 * Setup your collection view's bottom constraint to start the collection view off screen, and then animate it up when the user clicks the filter option in the action sheet
 * Following my (insane) workflow for applying filters to the thumbnails. Don't worry if you don't get it 100%, we will spend a lot of time tomorrow going over it and refining it.
+
+#basicPhotos
+------------
+
+* Setup your Share and Done buttons for your home view controller's navigation item
+* Add a UIimagePickerController to allow the user to take images from their device's camera. Only show this option if the camera exists on the device
+* Add a third view controller for photos pulled from the Photos framework. Use the same protocol & delegate methods from the galleryVC
+* Use the SLCompViewController to post a photo up to twitter #ellensburg
+* When entering filter mode, shrink the main image view down by adding to its constraints constant values. Make this animated (of course)
+* Figure out some way to apply the selected filter from the filter thumbnail collection view to the image in the main image view

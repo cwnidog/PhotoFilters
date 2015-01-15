@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F006FCB1A670D7300F8616B /* PhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F006FCA1A670D7300F8616B /* PhotosViewController.swift */; };
 		2F4494721A6470FB00512F40 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4494711A6470FB00512F40 /* AppDelegate.swift */; };
 		2F4494741A6470FB00512F40 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4494731A6470FB00512F40 /* ViewController.swift */; };
 		2F4494791A6470FB00512F40 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F4494781A6470FB00512F40 /* Images.xcassets */; };
@@ -34,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2F006FCA1A670D7300F8616B /* PhotosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotosViewController.swift; sourceTree = "<group>"; };
 		2F44946C1A6470FB00512F40 /* PhotoFilters.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoFilters.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F4494701A6470FB00512F40 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2F4494711A6470FB00512F40 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 			children = (
 				2F4494731A6470FB00512F40 /* ViewController.swift */,
 				2F4494A61A6476A600512F40 /* GalleryViewController.swift */,
+				2F006FCA1A670D7300F8616B /* PhotosViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -209,6 +212,7 @@
 				TargetAttributes = {
 					2F44946B1A6470FB00512F40 = {
 						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = KGXTSQ6Z68;
 					};
 					2F4494801A6470FB00512F40 = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -268,6 +272,7 @@
 				2F4494A51A64741000512F40 /* GalleryCell.swift in Sources */,
 				2F4494A71A6476A600512F40 /* GalleryViewController.swift in Sources */,
 				2F4494741A6470FB00512F40 /* ViewController.swift in Sources */,
+				2F006FCB1A670D7300F8616B /* PhotosViewController.swift in Sources */,
 				2F7D52541A65BDAB00A19CE4 /* Thumbnail.swift in Sources */,
 				2F4494721A6470FB00512F40 /* AppDelegate.swift in Sources */,
 			);
@@ -386,9 +391,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = PhotoFilters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -396,9 +404,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = PhotoFilters/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

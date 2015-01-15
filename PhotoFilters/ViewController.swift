@@ -7,20 +7,26 @@
 //
 
 import UIKit
+import Social
 
-class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewDataSource {
+class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
   
-  let alertController = UIAlertController(title: "Photos", message: "Pick one  to filter", preferredStyle: UIAlertControllerStyle.ActionSheet)
+  let alertController = UIAlertController(title: "Photo Filtering", message: "Funkify Your Photos", preferredStyle: UIAlertControllerStyle.ActionSheet)
   
   // image and collection view properties
   let mainImageView = UIImageView()
+  var mainImageViewButtonConstraint : NSLayoutConstraint!
+  
   var collectionView: UICollectionView!
-  var collectionViewYConstaraint: NSLayoutConstraint!
+  var collectionViewYConstraint: NSLayoutConstraint!
   var originalThumbnail: UIImage!
   var filterNames = [String]()
   let imageQueue = NSOperationQueue()
   var gpuContext: CIContext!
   var thumbnails = [Thumbnail]()
+  
+  var doneButton : UIBarButtonItem!
+  var shareButton : UIBarButtonItem!
   
   override func loadView() {
     
@@ -64,24 +70,56 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     // want to use an action sheet to allow the user to select images from the gallery or to apply filters to the
     // selected image
     
+    // define the done and share buttons. Add the share button to the nav bar
+    self.doneButton =  UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Done, target: self, action: "donePressed")
+    self.shareButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Action, target: self, action: "sharePressed")
+    self.navigationItem.rightBarButtonItem = self.shareButton
+    
     // view the image gallery
     let galleryOption = UIAlertAction(title: "Gallery", style: UIAlertActionStyle.Default) { (action) -> Void in
       println("Gallery pressed")
       let galleryVC = GalleryViewController()
-      galleryVC.delegate = self
+      galleryVC.delegate = self // this sets us up as the galleryVC delegate
       self.navigationController?.pushViewController(galleryVC, animated: true)
     } // galleryOption closure
     self.alertController.addAction(galleryOption)
     
     // apply the filters to the selected image
     let filterOption = UIAlertAction(title: "Filter", style: UIAlertActionStyle.Default) { (action) -> Void in
-      self.collectionViewYConstaraint.constant = 20
+      self.collectionViewYConstraint.constant = 20
+      self.mainImageViewButtonConstraint.constant = 70
       UIView.animateWithDuration(0.4, animations: { () -> Void in
         self.view.layoutIfNeeded()
       })
+      
+      //add the done button to the Filter nav bar
+      self.navigationItem.rightBarButtonItem = self.doneButton
+      
     } // filterOption closure
     self.alertController.addAction(filterOption)
     
+    // add an option to use the camera - assuming there is one
+    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera){
+      let cameraOption = UIAlertAction(title: "Camera", style: .Default, handler: { (action) -> Void in
+        
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.sourceType = UIImagePickerControllerSourceType.Camera
+        imagePickerController.allowsEditing = true
+        imagePickerController.delegate = self
+        self.presentViewController(imagePickerController, animated: true, completion: nil)
+      })// closure
+      self.alertController.addAction(cameraOption)
+    } // camera available
+    
+      // add option to go to stored photos
+      let photoOption = UIAlertAction(title: "Photos", style: .Default, handler: { (action) -> Void in
+        let photosVC = PhotosViewController()
+        photosVC.destinationImageSize = self.mainImageView.frame.size
+        photosVC.delegate = self
+        self.navigationController?.pushViewController(photosVC, animated: true)
+      }) // closure
+      self.alertController.addAction(photoOption)
+      
     // set up needed items to use the device's GPU
     let options = [kCIContextWorkingColorSpace: NSNull()] // keep things quick by limiting image resolution and size
     let eaglContext = EAGLContext(API: EAGLRenderingAPI.OpenGLES2)
@@ -90,27 +128,43 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   } // viewDidLoad()
   
   func setupThumbnails() {
+    // the list of filters to apply
     self.filterNames = ["CISepiaTone", "CIPhotoEffectChrome", "CIPhotoEffectNoir", "CIColorInvert", "CIPhotoEffectFade", "CIPhotoEffectMono"]
+    
+    // apply each of the filters
     for name in self.filterNames {
       let thumbnail = Thumbnail(filterName: name, operationQueue: self.imageQueue, context: self.gpuContext)
-      self.thumbnails.append(thumbnail)
+      self.thumbnails.append(thumbnail) // add the filtered image to the set of thumbnails
     } // for name
   } // setupThumbnails()
   
   //MARK: ImageSelectedDelegate
   
-  //Handles things when the user selects an image from the gallery
-  func controllerDidSelectImage(image: UIImage) {
+  //Instantiates the galleryVC delegate things when the user selects an image from the gallery
+  func controllerDidSelectImage(selectedImage: UIImage) {
     println("Image selected")
-    self.mainImageView.image = image // display the image on the main screen
-    self.generateThumbnail(image) // generate the filtered thumbnails
+    self.mainImageView.image = selectedImage // display the image on the main screen
+    self.generateThumbnail(selectedImage) // generate the filtered thumbnails
     
+    // keep a copy of the original image for each of the filters
     for thumbnail in self.thumbnails {
       thumbnail.originalImage = self.originalThumbnail
+      thumbnail.filteredImage = nil // we don't have a filtered image yet
     } // for thumbnail
     self.collectionView.reloadData()
   } // controllerDidSelectImage()
-
+  
+  // MARK: UIImagePickerController
+  func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+    let image = info[UIImagePickerControllerEditedImage] as? UIImage
+    self.controllerDidSelectImage(image!)
+    picker.dismissViewControllerAnimated(true, completion: nil)
+  } // imagePickerController()
+  
+  func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    picker.dismissViewControllerAnimated(true, completion: nil)
+  } // imagePickerControllerDidCancel()
+  
   // MARK: Button Selectors
   
   func photoButtonPressed(sender: UIButton) {
@@ -126,6 +180,26 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     UIGraphicsEndImageContext() // end our image context
   } // generateThumbnail()
   
+  func donePressed() {
+    self.collectionViewYConstraint.constant = -120
+    UIView.animateWithDuration(0.4, animations: { () -> Void in
+      self.view.layoutIfNeeded()
+    }) // closure
+    self.navigationItem.rightBarButtonItem = self.shareButton
+  } // donePressed
+  
+  func sharePressed() {
+    if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter){
+      let compViewController = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
+      compViewController.addImage(self.mainImageView.image)
+      self.presentViewController(compViewController, animated: true, completion: nil)
+    } // Twitter available
+    
+    else {
+      // tell user to turn on twitter
+    } // else
+  } // sharePressed()
+  
   // MARK: UICollectionViewDataSource
   func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return self.thumbnails.count
@@ -134,6 +208,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier("FILTER_CELL", forIndexPath: indexPath) as GalleryCell
     let thumbnail = self.thumbnails[indexPath.row]
+    
     if thumbnail.originalImage != nil { // have an image to process
       if thumbnail.filteredImage == nil { // need to generate the filtered image
         thumbnail.generateFilteredImage()
@@ -161,6 +236,9 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     
     let mainImageViewConstraintVertical = NSLayoutConstraint.constraintsWithVisualFormat("V:|-72-[mainImageView]-30-[photoButton]", options: nil, metrics: nil, views: views)
     rootView.addConstraints(mainImageViewConstraintVertical)
+    var testConstraint = NSLayoutConstraint()
+    self.mainImageViewButtonConstraint = mainImageViewConstraintVertical[1] as NSLayoutConstraint
+    
     
     // collectionView
     let collectionViewConstraintsHorizontal = NSLayoutConstraint.constraintsWithVisualFormat("H:|[collectionView]|", options: nil, metrics: nil, views: views)
@@ -172,7 +250,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     let collectionViewConstraintsVertical = NSLayoutConstraint.constraintsWithVisualFormat("V:[collectionView]-(-120)-|", options: nil, metrics: nil, views: views)
     rootView.addConstraints(collectionViewConstraintsVertical)
     
-    self.collectionViewYConstaraint = collectionViewConstraintsVertical.first as NSLayoutConstraint
+    self.collectionViewYConstraint = collectionViewConstraintsVertical.first as NSLayoutConstraint
     
   } // setupConstraintsOnRootView()
 

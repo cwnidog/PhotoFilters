@@ -9,14 +9,14 @@
 import UIKit
 
 protocol ImageSelectedProtocol {
-  func controllerDidSelectImage(UIImage) -> Void
+  func controllerDidSelectImage(selectedImage: UIImage) -> Void
 } // ImageSelectedProtocol
 
 class GalleryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
   
   var collectionView : UICollectionView!
   var images = [UIImage]()
-  var delegate: ImageSelectedProtocol?
+  var delegate: ImageSelectedProtocol? // will accept sanything that conforms to this protocol
   
   override func loadView() {
     
@@ -37,13 +37,8 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     
     // set the collection view minimum cell size
     collectionViewFlowLayout.itemSize = CGSize(width: 200, height: 200)
-    
-    // display a navigation bar
-    let navigationBar = self.navigationController!.navigationBar
-    rootView.addSubview(navigationBar)
-    
     // set up a dictionary of views so we can set constraints with VFL
-    let galleryViews = ["collectionView" : collectionView, "navigationBar" : navigationBar]
+    let galleryViews = ["collectionView" : collectionView]
     
     // define the constraints
     self.setupConstraintsOnRootView(rootView, forViews: galleryViews )
@@ -77,6 +72,11 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
       self.images.append(parkBench!)
     } // viewDidLoad()
   
+  override func viewWillAppear(animated: Bool) {
+    super.viewWillAppear(animated)
+    self.navigationController?.setNavigationBarHidden(false, animated: false)
+  }
+  
   // MARK: UICollectionViewDataSource
   
   // find out how many images there are in the collection
@@ -96,7 +96,7 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
   func setupConstraintsOnRootView(rootView: UIView, forViews galleryViews: [String : AnyObject]) {
     
     // add Jon Vogel's code to let us set up constraints based on the GalleryViewController's  Navigation Bar
-    let collectionViewConstraintVertical = NSLayoutConstraint.constraintsWithVisualFormat("V:[navigationBar]-30-[collectionView]-30-|", options: nil, metrics: nil, views: galleryViews)
+    let collectionViewConstraintVertical = NSLayoutConstraint.constraintsWithVisualFormat("V:|-70-[collectionView]-30-|", options: nil, metrics: nil, views: galleryViews)
     rootView.addConstraints(collectionViewConstraintVertical)
     
     //want the collection view to use the full-width of the screen between the margins
@@ -107,22 +107,10 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
   //MARK: UICollectionViewDelegate
   func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
     
-    // pass the selected image array to the delegat to be processed
+    // pass the selected image array to the delegate to be processed
     self.delegate?.controllerDidSelectImage(self.images[indexPath.row])
     
     // pop ourselves off the nav queue
     self.navigationController?.popViewControllerAnimated(true)
   } // collectionView delegate
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-}
+} // GalleryViewController
