@@ -20,6 +20,13 @@ class GalleryCell: UICollectionViewCell {
     imageView.frame = self.bounds
     imageView.contentMode = UIViewContentMode.ScaleAspectFill
     imageView.layer.masksToBounds = true
+    
+    let views = ["imageView" : self.imageView]
+    imageView.setTranslatesAutoresizingMaskIntoConstraints(false)
+    let imageViewConstraintsHorizontal = NSLayoutConstraint.constraintsWithVisualFormat("H:|[imageView]|", options: nil, metrics: nil, views: views)
+    let imageViewConstraintsVertical = NSLayoutConstraint.constraintsWithVisualFormat("V:|[imageView]|", options: nil, metrics: nil, views: views)
+    self.addConstraints(imageViewConstraintsHorizontal)
+    self.addConstraints(imageViewConstraintsVertical)
   } // override init()
   
   // we gotta do this to keep Xcode happy

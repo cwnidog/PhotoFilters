@@ -9,20 +9,20 @@
 import UIKit
 
 protocol ImageSelectedProtocol {
-  func controllerDidSelectImage(UIImage) -> Void
+  func controllerDidSelectImage(selectedImage: UIImage) -> Void
 } // ImageSelectedProtocol
 
 class GalleryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
   
   var collectionView : UICollectionView!
   var images = [UIImage]()
-  var delegate: ImageSelectedProtocol?
+  var delegate: ImageSelectedProtocol? // will accept anything that conforms to this protocol
+  var collectionViewFlowLayout : UICollectionViewFlowLayout!
   
   override func loadView() {
-    
     //set up the view to use the full screen and FlowLayout
     let rootView = UIView(frame: UIScreen.mainScreen().bounds)
-    let collectionViewFlowLayout = UICollectionViewFlowLayout()
+    self.collectionViewFlowLayout = UICollectionViewFlowLayout()
     
     // create the collection view to display the photos
     self.collectionView = UICollectionView(frame: rootView.frame, collectionViewLayout: collectionViewFlowLayout)
@@ -37,16 +37,14 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     
     // set the collection view minimum cell size
     collectionViewFlowLayout.itemSize = CGSize(width: 200, height: 200)
-    
-    // display a navigation bar
-    let navigationBar = self.navigationController!.navigationBar
-    rootView.addSubview(navigationBar)
-    
     // set up a dictionary of views so we can set constraints with VFL
-    let galleryViews = ["collectionView" : collectionView, "navigationBar" : navigationBar]
+    let galleryViews = ["collectionView" : collectionView]
     
     // define the constraints
     self.setupConstraintsOnRootView(rootView, forViews: galleryViews )
+    
+    // set the collectionViewFlowLayout itemSize property
+    collectionViewFlowLayout.itemSize = CGSize(width: 200, height: 200)
         
     self.view = rootView
     
@@ -75,7 +73,16 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
       self.images.append(fog!)
       self.images.append(oldCab!)
       self.images.append(parkBench!)
+      
+      // create and add the pinch gesture recognizer
+      let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: "collectionViewPinched:")
+      self.collectionView.addGestureRecognizer(pinchRecognizer)
     } // viewDidLoad()
+  
+  override func viewWillAppear(animated: Bool) {
+    super.viewWillAppear(animated)
+    self.navigationController?.setNavigationBarHidden(false, animated: false)
+  }
   
   // MARK: UICollectionViewDataSource
   
@@ -92,11 +99,39 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     return cell
   }
   
+  // MARK: Gexture Recognizer Actions
+  func collectionViewPinched(sender : UIPinchGestureRecognizer) {
+    switch sender.state {
+      case .Began :
+        println("began")
+    case .Changed :
+      println("changed")
+     self.collectionView.performBatchUpdates({ () -> Void in
+      if sender.velocity > 0 {
+        // increase item size
+        let newSize = CGSize(width: self.collectionViewFlowLayout.itemSize.width * 1.05, height: self.collectionViewFlowLayout.itemSize.height * 1.05)
+        self.collectionViewFlowLayout.itemSize = newSize
+      } // increase size
+      else if sender.velocity < 0 {
+        // decrease size
+        let newSize = CGSize(width: self.collectionViewFlowLayout.itemSize.width * 0.95, height: self.collectionViewFlowLayout.itemSize.height * 0.95)
+        self.collectionViewFlowLayout.itemSize = newSize
+      } // decrease size
+      
+     }, completion: { (finished) -> Void in
+      
+     })
+    default :
+      println("default case")
+      
+    } // end switch
+    println("collection view pinched")
+  } // collectionViewPinched()
+  
   // MARK: Gallery Autolayout Constraints
   func setupConstraintsOnRootView(rootView: UIView, forViews galleryViews: [String : AnyObject]) {
     
-    // add Jon Vogel's code to let us set up constraints based on the GalleryViewController's  Navigation Bar
-    let collectionViewConstraintVertical = NSLayoutConstraint.constraintsWithVisualFormat("V:[navigationBar]-30-[collectionView]-30-|", options: nil, metrics: nil, views: galleryViews)
+    let collectionViewConstraintVertical = NSLayoutConstraint.constraintsWithVisualFormat("V:|-70-[collectionView]-30-|", options: nil, metrics: nil, views: galleryViews)
     rootView.addConstraints(collectionViewConstraintVertical)
     
     //want the collection view to use the full-width of the screen between the margins
@@ -107,22 +142,10 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
   //MARK: UICollectionViewDelegate
   func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
     
-    // pass the selected image array to the delegat to be processed
+    // pass the selected image to the delegate to be filtered
     self.delegate?.controllerDidSelectImage(self.images[indexPath.row])
     
     // pop ourselves off the nav queue
     self.navigationController?.popViewControllerAnimated(true)
   } // collectionView delegate
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-}
+} // GalleryViewController
