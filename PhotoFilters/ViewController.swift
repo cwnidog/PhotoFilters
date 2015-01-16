@@ -47,7 +47,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     let photoButton = UIButton()
     photoButton.setTranslatesAutoresizingMaskIntoConstraints(false)
     photoButton.setTitle(
-      NSLocalizedString("Photos", comment: "This is the title for our photos button"), forState: .Normal)
+      NSLocalizedString("PhotosButton", comment: "This is the title for our photos button"), forState: .Normal)
     photoButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
     rootView.addSubview(photoButton)
     photoButton.addTarget(self, action: "photoButtonPressed:", forControlEvents: UIControlEvents.TouchUpInside)
@@ -79,12 +79,12 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     // selected image
     
     // define the done and share buttons. Add the share button to the nav bar
-    self.doneButton =  UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Done, target: self, action: "donePressed")
+    self.doneButton =  UIBarButtonItem(title: NSLocalizedString("DoneBarButton",  comment: "The name of our done bar button"), style: UIBarButtonItemStyle.Done, target: self, action: "donePressed")
     self.shareButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Action, target: self, action: "sharePressed")
     self.navigationItem.rightBarButtonItem = self.shareButton
     
     // view the image gallery
-    let galleryOption = UIAlertAction( title: NSLocalizedString("Gallery", comment: "This is the name of our Gallery action"), style: UIAlertActionStyle.Default) { (action) -> Void in
+    let galleryOption = UIAlertAction( title: NSLocalizedString("GalleryOption", comment: "This is the name of our Gallery action"), style: UIAlertActionStyle.Default) { (action) -> Void in
       println("Gallery pressed")
       let galleryVC = GalleryViewController()
       galleryVC.delegate = self // this sets us up as the galleryVC delegate
@@ -93,7 +93,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     self.alertController.addAction(galleryOption)
     
     // apply the filters to the selected image
-    let filterOption = UIAlertAction(title: "Filter", style: UIAlertActionStyle.Default) { (action) -> Void in
+    let filterOption = UIAlertAction(title: NSLocalizedString("Filter Option", comment: "The name of our filtering option"), style: UIAlertActionStyle.Default) { (action) -> Void in
       self.collectionViewYConstraint.constant = 20
       self.mainImageViewButtonConstraint.constant = 70
       UIView.animateWithDuration(0.4, animations: { () -> Void in
@@ -109,7 +109,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     // add an option to use the camera - assuming there is one
     if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera){
       let cameraOption = UIAlertAction(title:
-       NSLocalizedString("Camera", comment: "The name of our option to get the photo from the camera"), style: .Default, handler: { (action) -> Void in
+       NSLocalizedString("CameraOption", comment: "The name of our option to get the photo from the camera"), style: .Default, handler: { (action) -> Void in
         
         let imagePickerController = UIImagePickerController()
         imagePickerController.sourceType = UIImagePickerControllerSourceType.Camera

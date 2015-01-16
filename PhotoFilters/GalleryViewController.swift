@@ -79,10 +79,10 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
       self.collectionView.addGestureRecognizer(pinchRecognizer)
     } // viewDidLoad()
   
-  /* override func viewWillAppear(animated: Bool) {
+  override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
     self.navigationController?.setNavigationBarHidden(false, animated: false)
-  } */
+  }
   
   // MARK: UICollectionViewDataSource
   
