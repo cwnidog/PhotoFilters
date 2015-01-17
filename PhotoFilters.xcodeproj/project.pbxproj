@@ -46,6 +46,7 @@
 		2F7D52531A65BDAB00A19CE4 /* Thumbnail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Thumbnail.swift; sourceTree = "<group>"; };
 		2F8992C51A68980500CFC4A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2F8992C71A68980800CFC4A3 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		5D976A3A1A69F10700AD92F3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -285,6 +286,7 @@
 			children = (
 				2F44947B1A6470FB00512F40 /* Base */,
 				2F6ACFEB1A684D3300CEE1E4 /* fr */,
+				5D976A3A1A69F10700AD92F3 /* en */,
 			);
 			name = LaunchScreen.xib;
 			sourceTree = "<group>";

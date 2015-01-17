@@ -15,6 +15,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   
   // image and collection view properties
   let mainImageView = UIImageView()
+  var baseMainImage : UIImage! // holds image selected from Gallery before filters applied. This avoids filter build-up
 
   var mainImageViewButtonConstraint : NSLayoutConstraint!
   
@@ -27,6 +28,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   let imageQueue = NSOperationQueue()
   var gpuContext: CIContext!
   var thumbnails = [Thumbnail]()
+  var filterOption : UIAlertAction!
   var filteredMainImage : UIImage! // holds a filtered version of the main image
   
   var doneButton : UIBarButtonItem!
@@ -93,7 +95,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     self.alertController.addAction(galleryOption)
     
     // apply the filters to the selected image
-    let filterOption = UIAlertAction(title: NSLocalizedString("Filter Option", comment: "The name of our filtering option"), style: UIAlertActionStyle.Default) { (action) -> Void in
+    self.filterOption = UIAlertAction(title: NSLocalizedString("Filter Option", comment: "The name of our filtering option"), style: UIAlertActionStyle.Default) { (action) -> Void in
       self.collectionViewYConstraint.constant = 20
       self.mainImageViewButtonConstraint.constant = 70
       UIView.animateWithDuration(0.4, animations: { () -> Void in
@@ -105,6 +107,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
       
     } // filterOption closure
     self.alertController.addAction(filterOption)
+    self.filterOption.enabled = true
     
     // add an option to use the camera - assuming there is one
     if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera){
@@ -121,12 +124,12 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
     } // camera available
     
       // add option to go to stored photos
-      let photoOption = UIAlertAction(title: NSLocalizedString("Photos", comment: "The name of our option to use stored photos"), style: .Default, handler: { (action) -> Void in
+      let photoOption = UIAlertAction(title: NSLocalizedString("Photos", comment: "The name of our option to use stored photos"), style: .Default) { (action) -> Void in
         let photosVC = PhotosViewController()
         photosVC.destinationImageSize = self.mainImageView.frame.size
         photosVC.delegate = self
         self.navigationController?.pushViewController(photosVC, animated: true)
-      }) // closure
+      } // closure
       self.alertController.addAction(photoOption)
       
     // set up needed items to use the device's GPU
@@ -138,7 +141,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   
   func setupThumbnails() {
     // the list of filters to apply
-    self.filterNames = ["CISepiaTone", "CIPhotoEffectChrome", "CIPhotoEffectNoir", "CIColorInvert", "CIPhotoEffectFade", "CIPhotoEffectMono", "CIDotScreen", "CIHatchedScreen"]
+    self.filterNames = ["CISepiaTone", "CIPhotoEffectChrome", "CIPhotoEffectNoir", "CIColorInvert", "CIPhotoEffectFade", "CIPhotoEffectMono"]
     
     // apply each of the filters
     for name in self.filterNames {
@@ -153,6 +156,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   func controllerDidSelectImage(selectedImage: UIImage) {
     println("Image selected")
     self.mainImageView.image = selectedImage // display the image on the main screen
+    self.baseMainImage = selectedImage // save it away for re-use
     self.generateThumbnail(selectedImage) // generate the filtered thumbnails
     
     // keep a copy of the original image for each of the filters
@@ -225,8 +229,6 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
         thumbnail.generateFilteredImage()
         cell.imageView.image = thumbnail.filteredImage!
         
-        // self.mainImageView.image = cell.imageView.image
-        
       } // filteredImage == nil
     } // originalImage != nil
     
@@ -236,7 +238,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   // does just what its name suggests
   func generateFilteredImage(filterIndex: Int) {
     
-    let startImage = CIImage(image: self.mainImageView.image)
+    let startImage = CIImage(image: baseMainImage)
     let filter = CIFilter(name: self.filterNames[filterIndex])
     
     // use default values for any keys that the filter may need
