@@ -141,7 +141,7 @@ class ViewController: UIViewController, ImageSelectedProtocol, UICollectionViewD
   
   func setupThumbnails() {
     // the list of filters to apply
-    self.filterNames = ["CISepiaTone", "CIPhotoEffectChrome", "CIPhotoEffectNoir", "CIColorInvert", "CIPhotoEffectFade", "CIPhotoEffectMono"]
+    self.filterNames = ["CISepiaTone", "CIPhotoEffectChrome", "CIPhotoEffectNoir", "CIColorInvert", "CIPhotoEffectFade", "CIPhotoEffectMono", "CIPhotoEffectProcess"]
     
     // apply each of the filters
     for name in self.filterNames {
