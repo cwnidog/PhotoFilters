@@ -1,6 +1,8 @@
 # PhotoFilters
 ==============
 
+PhotoFilters is an Instagram-like application. It allows the user to select a photo from their stored photos and apply a single filter to the selected photo. The app provides a sample of thumbnails showing the selected photos with each of the available filters applied. The user can then select a filtered photo, which is displayed full-sized on the device screen. The app also provides an option for the user to share the (non-)filtered photo to a social network. Right now, the only social network supported is Twitter.
+
 #Initial
 --------
 
